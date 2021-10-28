@@ -41,7 +41,8 @@ func setDefaults() {
 	viper.SetDefault("slack.bot_username", "PhishBot")
 	viper.SetDefault("slack.bot_emoji", ":blowfish:")
 	viper.SetDefault("slack.disable_credentials", false)
-	viper.SetDefault("listen_host", "0.0.0.0")
+	viper.SetDefault("teams.disable_credentials", false)
+	viper.SetDefault("listen_host", "127.0.0.1")
 	viper.SetDefault("ip_query_base", "https://whatismyipaddress.com/ip/")
 	viper.SetDefault("listen_port", "9999")
 	viper.SetDefault("webhook_path", "/webhook")
@@ -79,6 +80,12 @@ func validateConfig() {
 			log.Infof("Using Slack sending profile. Will send messages to %s", viper.GetString("slack.bot_channel"))
 			continue
 		}
+		if profile == "teams" {
+			teamsConfigs := []string{"teams.webhook"}
+                        checkKeysExist(teamsConfigs...)
+                        log.Infof("Using Teams sending profile. Will send messages to %s", viper.GetString("teams.webhook"))
+                        continue
+                }
 		if profile == "email" {
 			emailConfigs := []string{"email.sender", "email.sender_password", "email.recipient", "email.host", "email.host_addr"}
 			checkKeysExist(emailConfigs...)
