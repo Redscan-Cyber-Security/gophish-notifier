@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	errNoSignature      = errors.New("header X-Gophish-Signature not provided")
+	errNoSignature      = errors.New("header X-Security-Signature not provided")
 	errInvalidSignature = errors.New("invalid signature")
 )
 
@@ -25,7 +25,7 @@ func validateSignature(body []byte, r *http.Request) error {
 	mac.Write(body)
 	expected := hex.EncodeToString(mac.Sum(nil))
 	var actual string
-	if _, err := fmt.Sscanf(r.Header.Get("X-Gophish-Signature"), "sha256=%s", &actual); err != nil {
+	if _, err := fmt.Sscanf(r.Header.Get("X-Security-Signature"), "sha256=%s", &actual); err != nil {
 		return errNoSignature
 	}
 	if !hmac.Equal([]byte(expected), []byte(actual)) {
@@ -77,6 +77,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+		if profile == "teams" {
+                        if err := sender.SendTeams(); err != nil {
+                                log.Error(err)
+                                return
+                        }
+                }
 		if profile == "slack" {
 			if err := sender.SendSlack(); err != nil {
 				log.Error(err)
