@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"net/smtp"
-
+	goteamsnotify "github.com/atc0005/go-teams-notify/v2"
 	"github.com/ashwanthkumar/slack-go-webhook"
 	"github.com/spf13/viper"
 )
@@ -19,6 +19,21 @@ func sendSlackAttachment(attachment slack.Attachment) error {
 		return errs[0]
 	}
 	return nil
+}
+
+func sendTeams(title, body string, color string) error {
+	// init the client
+	mstClient := goteamsnotify.NewClient()
+	// Setup message card
+	msgCard := goteamsnotify.NewMessageCard()
+	msgCard.Title = title
+	msgCard.Text = body
+	msgCard.ThemeColor = color
+
+	 if err := mstClient.Send(viper.GetString("teams.webhook"), msgCard); err != nil {
+	         return err
+	}	
+        return nil
 }
 
 func sendEmail(subject, body string) error {
