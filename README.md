@@ -1,3 +1,11 @@
+# GoPhish Notifier - Updated by Redscan.
+
+Added Teams support, utilises channel incoming webhook. Ensure the configuration profile is set to use "teams" and specify the correct webhook.
+
+teams: {webhook: 'https://redscan.webhook.office.com/webhookb2/{UUID}'}
+
+Edit by James Hemmings
+
 # GoPhish Notifier
 
 GoPhish Notifier notifies red team members when their GoPhish campaign status
